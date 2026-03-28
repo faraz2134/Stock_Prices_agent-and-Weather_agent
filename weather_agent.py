@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 import requests
 from dotenv import load_dotenv
-from google import genai
+import google.generativeai as genai   # ✅ FIXED IMPORT
 
 load_dotenv()
 
@@ -28,23 +28,18 @@ def get_weather(city: str) -> str:
     except Exception as e:
         return f"Error: {e}"
 
-# --- GEMINI CLIENT ---
-client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-MODEL_ID = "models/gemini-2.5-flash"
+# --- GEMINI SETUP ---
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))  # ✅ FIXED
+
+model = genai.GenerativeModel("gemini-2.5-flash")  # ✅ FIXED
 
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message")
 
     try:
-        response = client.models.generate_content(
-            model=MODEL_ID,
-            contents=user_input,
-            config={
-                "tools": [get_weather],
-                "automatic_function_calling": {"disable": False},
-                "system_instruction": "You are a weather assistant. Always use get_weather tool for weather queries."
-            }
+        response = model.generate_content(
+            user_input
         )
 
         return jsonify({"reply": response.text})
