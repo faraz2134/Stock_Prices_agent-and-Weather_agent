@@ -69,17 +69,6 @@ ALPHA_VANTAGE_API_KEY=your_stock_api_key_here
 
 ---
 
-## 📂 Project Structure
-
-```
-project/
-│── main.py        # Core agent logic
-│── tools.py       # External API tools (weather, stock)
-│── .env           # API keys (ignored)
-│── .gitignore
-```
-
----
 
 ## 🤖 How the Agent Works
 
